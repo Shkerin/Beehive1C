@@ -1,18 +1,18 @@
 package ru.vladimirshkerin;
 
 /**
- * The class contains the data for running process 1C.
+ * The class contains the data for running process.
  *
  * @author Vladimir Shkerin
  * @since 24.06.2016
  */
-public class Client1C {
+public class Task {
 
     private String name;
     private Command command;
     private Schedule schedule;
 
-    public Client1C(String name, Command command, Schedule schedule) {
+    public Task(String name, Command command, Schedule schedule) {
         this.name = name;
         this.command = command;
         this.schedule = schedule;
