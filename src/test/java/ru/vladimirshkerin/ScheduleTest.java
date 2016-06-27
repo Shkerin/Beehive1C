@@ -183,6 +183,7 @@ public class ScheduleTest {
 
     }
 
+    //TODO to remove the release
     private void calendarExample() {
         Calendar calendar = Calendar.getInstance();
 

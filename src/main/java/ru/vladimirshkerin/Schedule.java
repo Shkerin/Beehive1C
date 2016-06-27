@@ -57,7 +57,7 @@ public class Schedule {
             }
         }
         if (dayOfWeek > -1) {
-            if ((dayOfWeek + 1) != calendar.get(Calendar.DAY_OF_WEEK)) {
+            if (dayOfWeek != (calendar.get(Calendar.DAY_OF_WEEK) - 1)) {
                 return false;
             }
         }
