@@ -4,9 +4,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * The class for testing class Command.
@@ -16,8 +19,8 @@ import static org.junit.Assert.*;
  */
 public class CommandTest {
 
-    private final String path = "/tmp";
-    private final String[] parameters = new String[] {"ENTERPRISE", "/N", "admin"};
+    private final String path = "C:\\Program Files\\1cv82\\8.2.19.90\\bin\\";
+    private final String[] parameters = new String[]{"ENTERPRISE", "/N", "admin"};
 
     private Command command;
 
@@ -59,5 +62,13 @@ public class CommandTest {
         command.setParameters(expected);
         final String[] actual = command.getParameters();
         assertTrue(Arrays.equals(expected, actual));
+    }
+
+    @Test
+    public void toList() throws Exception {
+        List<String> list = new ArrayList<>();
+        list.add(path);
+        list.addAll(1, Arrays.asList(parameters));
+        assertEquals(list, command.toList());
     }
 }
