@@ -1,22 +1,23 @@
 package ru.vladimirshkerin;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
- * The class contains the main logic of the server.
+ * The main class of the controller server.
  *
  * @author Vladimir Shkerin
  * @since 24.06.2016
  */
 public class Server {
 
-    private List<Task> taskList;        // list all task
-    private List<Thread> processList;   // list all process
-    private boolean execute;            // flag execute server
+    private Scheduler scheduler;
+    private List<Task> taskList;
+    private List<ProcessSystem> processList;
+    private boolean execute;
 
-    private Server() {
+    public Server() {
+        this.scheduler = new Scheduler(this);
         this.taskList = new ArrayList<>();
         this.processList = new ArrayList<>();
         this.execute = false;
@@ -49,81 +50,50 @@ public class Server {
         }
     }
 
-    private void start() {
+    public void start() {
         setExecute(true);
-        execute();
+        scheduler.setExecute(true);
+        scheduler.execute();
     }
 
-    private void stop() {
+    public void stop() {
         setExecute(false);
+        scheduler.setExecute(false);
         stopAllProcess();
     }
 
-    private void execute() {
+    public void excecute() {
         while (isExecute()) {
-            if (getTaskList().size() > 0) {
-                Calendar cal = Calendar.getInstance();
-                for (Task task : getTaskList()) {
-                    if (checkRunningProcess(task, cal)) {
-                        runProcess(task);
-                    }
-                }
-            }
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //TODO to replace the log
-                ex.printStackTrace();
-            }
+            //empty
         }
-    }
-
-    /**
-     * Checked date in all Task for run process.
-     *
-     * @param task
-     * @return
-     */
-    private boolean checkRunningProcess(final Task task, final Calendar calendar) {
-        Schedule schedule = task.getSchedule();
-        return schedule.isExecute(calendar);
-    }
-
-    /**
-     * Run process.
-     *
-     * @param task
-     */
-    private void runProcess(final Task task) {
-        Process proc = new Process("Thread_" + (processList.size() + 1), task);
-        Thread thread = new Thread(proc);
-        thread.start();
-
-        processList.add(thread);
-
-        //TODO to replace the log
-        System.out.println("Thread \"" + proc.getName() + "\" start.");
     }
 
     /**
      * Stop all alive process.
      */
     private void stopAllProcess() {
-        for (Thread thread : getThreadList()) {
-            if (thread.isAlive()) {
-                thread.interrupt();
+        for (ProcessSystem proc : getProcessList()) {
+            if (proc.isExecute()) {
+                proc.stop();
                 //TODO to replace the log
-                System.out.println("Thread \"" + thread.getName() + "\" interrupt.");
+                System.out.println("Process \"" + proc.getName() + "\" stopped.");
             }
         }
+    }
+
+    public void addTask(Task task) {
+        taskList.add(task);
+    }
+
+    public void addProcess(ProcessSystem proc) {
+        processList.add(proc);
     }
 
     public List<Task> getTaskList() {
         return taskList;
     }
 
-    public List<Thread> getThreadList() {
+    public List<ProcessSystem> getProcessList() {
         return processList;
     }
 
@@ -131,7 +101,7 @@ public class Server {
         return execute;
     }
 
-    public synchronized void setExecute(boolean execute) {
+    private synchronized void setExecute(boolean execute) {
         this.execute = execute;
     }
 }

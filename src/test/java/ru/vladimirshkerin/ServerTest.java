@@ -23,7 +23,7 @@ public class ServerTest {
 
     @Before
     public void setUp() throws Exception {
-        server = Server.getInstance();
+        server = new Server();
 
         Command command = new Command(path, parameters);
         Schedule schedule = new Schedule(-1, -1, 29, -1, -1);
