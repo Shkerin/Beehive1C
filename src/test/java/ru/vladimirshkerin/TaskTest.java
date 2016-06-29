@@ -14,8 +14,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class TaskTest {
 
-    private final String path = "/tmp";
-    private final String[] parameters = new String[]{"ENTERPRISE", "/N", "admin"};
+    private final String path = "/opt/1cv8/8.3.8.1784/1cv8";
+    private final String[] parameters = new String[]{
+            "ENTERPRISE", "/S", "virt:1641\\mag", "/N", "server", "/P", "server"};
 
     private final String name = "Task";
     private final Command command = new Command(path, parameters);

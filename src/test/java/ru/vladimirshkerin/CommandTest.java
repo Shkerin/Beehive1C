@@ -19,8 +19,9 @@ import static org.junit.Assert.assertTrue;
  */
 public class CommandTest {
 
-    private final String path = "C:\\Program Files\\1cv82\\8.2.19.90\\bin\\";
-    private final String[] parameters = new String[]{"ENTERPRISE", "/N", "admin"};
+    private final String path = "/opt/1cv8/8.3.8.1784/1cv8";
+    private final String[] parameters = new String[]{
+            "ENTERPRISE", "/S", "virt:1641\\mag", "/N", "server", "/P", "server"};
 
     private Command command;
 
