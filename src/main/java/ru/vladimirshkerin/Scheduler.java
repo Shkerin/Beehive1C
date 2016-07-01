@@ -1,5 +1,10 @@
 package ru.vladimirshkerin;
 
+import org.apache.log4j.Logger;
+import ru.vladimirshkerin.model.ProcessSystemApache;
+import ru.vladimirshkerin.model.Schedule;
+import ru.vladimirshkerin.model.Task;
+
 import java.util.Calendar;
 
 /**
@@ -9,6 +14,8 @@ import java.util.Calendar;
  * @since 28.06.2016
  */
 public class Scheduler implements Runnable {
+
+    private static final Logger log = Logger.getLogger(Scheduler.class);
 
     private Server server;
     private boolean execute;
@@ -32,37 +39,42 @@ public class Scheduler implements Runnable {
     }
 
     public void execute() {
-        while (isExecute()) {
-            if (server.getTaskList().size() > 0) {
-                Calendar cal = Calendar.getInstance();
-                for (Task task : server.getTaskList()) {
-                    ProcessSystem proc = createProcess(task);
-                    if (checkExecuteProcess(cal, proc)) {
-                        runProcess(proc);
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isExecute()) {
+                    if (server.getTaskList().size() > 0) {
+                        Calendar cal = Calendar.getInstance();
+                        for (Task task : server.getTaskList()) {
+                            ProcessHandler proc = createProcess(task);
+                            if (checkStatusProcess(cal, proc)) {
+                                runProcess(proc);
+                            }
+                        }
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        log.warn("Scheduler interrupted.");
                     }
                 }
             }
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //TODO to replace the log
-                ex.printStackTrace();
-            }
-        }
+        });
+        th.start();
     }
 
-    private ProcessSystem createProcess(Task task) {
-        for (ProcessSystem p : server.getProcessList()) {
+    private ProcessHandler createProcess(Task task) {
+        for (ProcessHandler p : server.getProcessList()) {
             if (p.getTask().equals(task)) {
                 return p;
             }
         }
-        return new ProcessSystem(task);
+        return new ProcessSystemApache(task);
     }
 
-    private boolean checkExecuteProcess(Calendar cal, ProcessSystem proc) {
-        if (proc.isExecute()) {
+    private boolean checkStatusProcess(Calendar cal, ProcessHandler proc) {
+        if (proc.getStatus() != ProcessStatus.RUN) {
             return false;
         }
 
@@ -70,12 +82,11 @@ public class Scheduler implements Runnable {
         return schedule.isExecute(cal);
     }
 
-    private void runProcess(final ProcessSystem proc) {
+    private void runProcess(final ProcessHandler proc) {
         proc.start();
         server.addProcess(proc);
 
-        //TODO to replace the log
-        System.out.println("Thread \"" + proc.getName() + "\" start.");
+        log.debug("Scheduler: process \"" + proc.getName() + "\" start.");
     }
 }
 

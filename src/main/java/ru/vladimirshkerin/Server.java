@@ -1,5 +1,8 @@
 package ru.vladimirshkerin;
 
+import org.apache.log4j.Logger;
+import ru.vladimirshkerin.model.Task;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +14,11 @@ import java.util.List;
  */
 public class Server {
 
+    private static final Logger log = Logger.getLogger(Server.class);
+
     private Scheduler scheduler;
     private List<Task> taskList;
-    private List<ProcessSystem> processList;
+    private List<ProcessHandler> processList;
     private boolean execute;
 
     public Server() {
@@ -26,6 +31,7 @@ public class Server {
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("usage: beehive [start | stop | restart | status] ");
+            return;
         }
 
         Server server = new Server();
@@ -51,41 +57,48 @@ public class Server {
     }
 
     public void start() {
+        log.info("---------- Start server Beehive ----------");
         setExecute(true);
         scheduler.setExecute(true);
         scheduler.execute();
+        execute();
     }
 
     public void stop() {
         setExecute(false);
         scheduler.setExecute(false);
         stopAllProcess();
+        log.info("---------- Stop server Beehive ----------");
     }
 
-    public void excecute() {
-        while (isExecute()) {
-            //empty
-        }
+    public void execute() {
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    log.warn("Server interrupted.");
+                }
+            }
+        });
+        th.start();
     }
 
-    /**
-     * Stop all alive process.
-     */
     private void stopAllProcess() {
-        for (ProcessSystem proc : getProcessList()) {
-            if (proc.isExecute()) {
+        for (ProcessHandler proc : getProcessList()) {
+            if (proc.getStatus() != ProcessStatus.STOPPED) {
                 proc.stop();
-                //TODO to replace the log
-                System.out.println("Process \"" + proc.getName() + "\" stopped.");
             }
         }
+        log.debug("Server: stopped all processes.");
     }
 
     public void addTask(Task task) {
         taskList.add(task);
     }
 
-    public void addProcess(ProcessSystem proc) {
+    public void addProcess(ProcessHandler proc) {
         processList.add(proc);
     }
 
@@ -93,7 +106,7 @@ public class Server {
         return taskList;
     }
 
-    public List<ProcessSystem> getProcessList() {
+    public List<ProcessHandler> getProcessList() {
         return processList;
     }
 
