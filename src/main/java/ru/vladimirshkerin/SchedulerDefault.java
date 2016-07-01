@@ -13,14 +13,14 @@ import java.util.Calendar;
  * @author Vladimir Shkerin
  * @since 28.06.2016
  */
-public class Scheduler implements Runnable {
+public class SchedulerDefault implements Runnable {
 
-    private static final Logger log = Logger.getLogger(Scheduler.class);
+    private static final Logger log = Logger.getLogger(SchedulerDefault.class);
 
     private Server server;
     private boolean execute;
 
-    public Scheduler(Server server) {
+    public SchedulerDefault(Server server) {
         this.server = server;
         this.execute = false;
     }
@@ -56,7 +56,7 @@ public class Scheduler implements Runnable {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
-                        log.warn("Scheduler interrupted.");
+                        log.warn("SchedulerDefault interrupted.");
                     }
                 }
             }
@@ -86,7 +86,7 @@ public class Scheduler implements Runnable {
         proc.start();
         server.addProcess(proc);
 
-        log.debug("Scheduler: process \"" + proc.getName() + "\" start.");
+        log.debug("SchedulerDefault: process \"" + proc.getName() + "\" start.");
     }
 }
 

@@ -1,6 +1,9 @@
 package ru.vladimirshkerin;
 
 import org.apache.log4j.Logger;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import ru.vladimirshkerin.model.Task;
 
 import java.util.ArrayList;
@@ -16,13 +19,13 @@ public class Server {
 
     private static final Logger log = Logger.getLogger(Server.class);
 
-    private Scheduler scheduler;
+    private SchedulerDefault schedulerDefault;
     private List<Task> taskList;
     private List<ProcessHandler> processList;
     private boolean execute;
 
     public Server() {
-        this.scheduler = new Scheduler(this);
+        this.schedulerDefault = new SchedulerDefault(this);
         this.taskList = new ArrayList<>();
         this.processList = new ArrayList<>();
         this.execute = false;
@@ -59,14 +62,14 @@ public class Server {
     public void start() {
         log.info("---------- Start server Beehive ----------");
         setExecute(true);
-        scheduler.setExecute(true);
-        scheduler.execute();
+        schedulerDefault.setExecute(true);
+        schedulerDefault.execute();
         execute();
     }
 
     public void stop() {
         setExecute(false);
-        scheduler.setExecute(false);
+        schedulerDefault.setExecute(false);
         stopAllProcess();
         log.info("---------- Stop server Beehive ----------");
     }
