@@ -1,4 +1,4 @@
-package ru.vladimirshkerin;
+package ru.vladimirshkerin.model;
 
 import java.util.Calendar;
 

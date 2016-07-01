@@ -1,4 +1,4 @@
-package ru.vladimirshkerin;
+package ru.vladimirshkerin.model;
 
 /**
  * The class contains the data for running process.
