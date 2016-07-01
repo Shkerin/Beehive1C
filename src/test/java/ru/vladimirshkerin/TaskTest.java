@@ -3,6 +3,9 @@ package ru.vladimirshkerin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.vladimirshkerin.model.Command;
+import ru.vladimirshkerin.model.Schedule;
+import ru.vladimirshkerin.model.Task;
 
 import static org.junit.Assert.assertEquals;
 

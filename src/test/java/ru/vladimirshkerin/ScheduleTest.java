@@ -3,6 +3,7 @@ package ru.vladimirshkerin;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.vladimirshkerin.model.Schedule;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
