@@ -2,6 +2,7 @@ package ru.vladimirshkerin;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import ru.vladimirshkerin.model.Command;
 import ru.vladimirshkerin.model.ProcessSystemApache;
@@ -53,6 +54,7 @@ public class ProcessSystemApacheTest {
         }
     }
 
+    @Ignore
     @Test
     public void start() throws Exception {
         processLS.start();
@@ -64,6 +66,7 @@ public class ProcessSystemApacheTest {
         assertEquals(0, processLS.getExitValue());
     }
 
+    @Ignore
     @Test
     public void stop() throws Exception {
         processLS.start();

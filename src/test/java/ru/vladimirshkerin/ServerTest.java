@@ -2,6 +2,7 @@ package ru.vladimirshkerin;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import ru.vladimirshkerin.model.Command;
 import ru.vladimirshkerin.model.Schedule;
@@ -47,6 +48,7 @@ public class ServerTest {
         server = null;
     }
 
+    @Ignore
     @Test
     public void start() throws Exception {
         server.start();
@@ -58,6 +60,7 @@ public class ServerTest {
         } while (currentTime < stopTime);
     }
 
+    @Ignore
     @Test
     public void stop() throws Exception {
         server.stop();
