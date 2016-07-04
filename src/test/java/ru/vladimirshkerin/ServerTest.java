@@ -4,13 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import ru.vladimirshkerin.model.Command;
-import ru.vladimirshkerin.model.Schedule;
-import ru.vladimirshkerin.model.Task;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * The class for testing class Server.
@@ -20,6 +13,7 @@ import java.util.GregorianCalendar;
  */
 public class ServerTest {
 
+    private final String fileName = "crontab.txt";
     private final String path = "/opt/1cv8/8.3.8.1784/1cv8";
     private final String[] parameters = new String[]{
             "ENTERPRISE", "/S", "virt:1641\\mag", "/N", "server", "/P", "server"};
@@ -28,41 +22,25 @@ public class ServerTest {
 
     @Before
     public void setUp() throws Exception {
-        server = new Server();
-
-        Calendar calendar = new GregorianCalendar();
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        Command command = new Command(path, parameters);
-        Schedule schedule = new Schedule(-1, month, day, -1, -1);
-        for (int i = 0; i < 2; i++) {
-            Task task = new Task("Task_" + i, command, schedule);
-            server.addTask(task);
-        }
+        server = Server.getInstance();
+        server.loadCronFile(fileName);
     }
 
     @After
     public void tearDown() throws Exception {
         server.stop();
-        server = null;
     }
 
-    @Ignore
-    @Test
+    @Test(timeout = 11L * 1000L)
     public void start() throws Exception {
         server.start();
 
-        Long stopTime = new Date().getTime() + 10L * 1000;
-        Long currentTime;
-        do {
-            currentTime = new Date().getTime();
-        } while (currentTime < stopTime);
+        try {
+            Thread.sleep(10L * 1000L);
+        } catch (Exception e) {
+            //empty
+        }
     }
 
-    @Ignore
-    @Test
-    public void stop() throws Exception {
-        server.stop();
-    }
 }
+
