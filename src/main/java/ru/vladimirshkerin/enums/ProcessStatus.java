@@ -1,4 +1,4 @@
-package ru.vladimirshkerin;
+package ru.vladimirshkerin.enums;
 
 /**
  * Enumeration of statuses of a process the operating system.
