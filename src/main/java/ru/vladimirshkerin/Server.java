@@ -81,6 +81,25 @@ public class Server {
         log.info("---------- Stop server Beehive ----------");
     }
 
+    public void restart() throws SchedulerException {
+        stop();
+
+        try {
+            Thread.sleep(500L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            this.scheduler = StdSchedulerFactory.getDefaultScheduler();
+        } catch (SchedulerException sex) {
+            log.error("Error initialization scheduler!", sex);
+            System.exit(1);
+        }
+
+        start();
+    }
+
     public void execute() {
         Thread th = new Thread(new Runnable() {
             @Override
@@ -114,7 +133,7 @@ public class Server {
                 log.error(msg);
             }
         } catch (IOException e) {
-            log.error("Error load file \"" + fineName, e);
+            log.error("Error load file \"" + fineName + "\"", e);
         }
 
         addTaskToScheduler(taskList);
