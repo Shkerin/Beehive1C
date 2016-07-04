@@ -1,9 +1,8 @@
 package ru.vladimirshkerin;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.vladimirshkerin.model.Command;
+import ru.vladimirshkerin.models.Command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,41 +27,46 @@ public class CommandTest {
 
     @Before
     public void setUp() throws Exception {
-        command = new Command(path, arguments);
+        command = new Command(path, Arrays.asList(arguments));
     }
 
-    @After
-    public void tearDown() throws Exception {
-        command = null;
+    @Test
+    public void constructorsTest() throws Exception {
+        Command cmd = new Command();
+        cmd = new Command(path);
     }
 
     @Test
     public void getPath() throws Exception {
-        final String expected = path;
-        final String actual = command.getCommandLine();
-        assertEquals(expected, actual);
+        assertEquals(path, command.getCommandLine());
     }
 
     @Test
     public void setPath() throws Exception {
-        final String expected = path;
-        command.setCommandLine(expected);
-        final String actual = command.getCommandLine();
-        assertEquals(expected, actual);
+        command.setCommandLine(path);
+        assertEquals(path, command.getCommandLine());
     }
 
     @Test
     public void getArguments() throws Exception {
-        final String[] expected = arguments;
-        final String[] actual = command.getArguments();
-        assertTrue(Arrays.equals(expected, actual));
+        List<String> expected = Arrays.asList(arguments);
+        List<String> actual = command.getArguments();
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void setArguments() throws Exception {
-        final String[] expected = arguments;
+    public void setArgumentsAsList() throws Exception {
+        List<String> expected = Arrays.asList(arguments);
         command.setArguments(expected);
-        final String[] actual = command.getArguments();
+        List<String> actual = command.getArguments();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void setArgumentsAsArrays() throws Exception {
+        String[] expected = arguments;
+        command.setArguments(expected);
+        String[] actual = (String[]) command.getArguments().toArray();
         assertTrue(Arrays.equals(expected, actual));
     }
 
@@ -80,8 +84,8 @@ public class CommandTest {
         for (String s : arguments) {
             sb.append(" ").append(s);
         }
-        final String expected = sb.toString();
-        final String actual = command.toString();
+        String expected = sb.toString();
+        String actual = command.toString();
         assertEquals(expected, actual);
     }
 }
