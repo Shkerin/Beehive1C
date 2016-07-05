@@ -1,5 +1,7 @@
 package ru.vladimirshkerin;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,25 +18,19 @@ import java.net.URL;
  */
 public class LauncherServerTray extends JFrame {
 
+    private static Logger log = Logger.getLogger(LauncherServerTray.class);
+
     public static void main(String[] args) {
-        /* Use an appropriate Look and Feel */
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 //            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            log.error("Error use an appropriate Look and Feel", ex);
         }
         /* Turn off metal's use of bold fonts */
 //        UIManager.put("swing.boldMetal", Boolean.FALSE);
-        //Schedule a job for the event-dispatching thread:
-        //adding TrayIcon.
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -43,15 +39,15 @@ public class LauncherServerTray extends JFrame {
     }
 
     private static void createAndShowGUI() {
-        //Check the SystemTray support
+        // Check the SystemTray support
         if (!SystemTray.isSupported()) {
             System.out.println("SystemTray is not supported");
             return;
         }
         Image image = createImage("/images/beehive.png", "tray icon");
-        final PopupMenu popup = new PopupMenu();
         final TrayIcon trayIcon = new TrayIcon(image);
         final SystemTray tray = SystemTray.getSystemTray();
+        final PopupMenu popup = new PopupMenu();
 
         // Create a popup menu components
         MenuItem aboutItem = new MenuItem("About");
@@ -64,7 +60,7 @@ public class LauncherServerTray extends JFrame {
         MenuItem noneItem = new MenuItem("None");
         MenuItem exitItem = new MenuItem("Exit");
 
-        //Add components to popup menu
+        // Add components to popup menu
         popup.add(aboutItem);
         popup.addSeparator();
         popup.add(cb1);
@@ -82,7 +78,7 @@ public class LauncherServerTray extends JFrame {
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {
-            System.out.println("TrayIcon could not be added.");
+            log.error("TrayIcon could not be added.", e);
             return;
         }
 
@@ -163,12 +159,12 @@ public class LauncherServerTray extends JFrame {
         });
     }
 
-    //Obtain the image URL
-    protected static Image createImage(String path, String description) {
+    // Obtain the image URL
+    private static Image createImage(String path, String description) {
         URL imageURL = LauncherServerTray.class.getResource(path);
 
         if (imageURL == null) {
-            System.err.println("Resource not found: " + path);
+            log.error("Resource not found: " + path);
             return null;
         } else {
             return (new ImageIcon(imageURL, description)).getImage();
