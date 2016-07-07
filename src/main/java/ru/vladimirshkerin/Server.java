@@ -5,8 +5,10 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import ru.vladimirshkerin.enums.CronFiled;
 import ru.vladimirshkerin.exceptions.ParsingFileException;
+import ru.vladimirshkerin.interfaces.Settings;
 import ru.vladimirshkerin.models.Command;
 import ru.vladimirshkerin.models.ProcessSystemIml;
+import ru.vladimirshkerin.models.SettingsFile;
 import ru.vladimirshkerin.models.Task;
 
 import java.io.BufferedReader;
@@ -26,9 +28,11 @@ import static org.quartz.TriggerBuilder.newTrigger;
  */
 public class Server {
 
-    public static Server Instance;
-
     private static Logger log = Logger.getLogger(Server.class);
+
+    private static Settings settings = SettingsFile.getInstance();
+
+    public static Server Instance;
 
     private Scheduler scheduler;
     private boolean execute;
@@ -54,34 +58,44 @@ public class Server {
         this.jobList = new ArrayList<>();
     }
 
-    public void start() throws SchedulerException {
+    public void start() {
         log.info("---------- Start server Beehive ----------");
 
-        if (!scheduler.isStarted()) {
-            scheduler.start();
+        try {
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+        } catch (SchedulerException e) {
+            log.error("Error scheduler.", e);
+            return;
         }
 
         setExecute(true);
         execute();
     }
 
-    public void stop() throws SchedulerException {
+    public void stop() {
         setExecute(false);
 
-        for (JobDetail job : jobList) {
-            scheduler.interrupt(job.getKey());
-        }
+        try {
+            for (JobDetail job : jobList) {
+                scheduler.interrupt(job.getKey());
+            }
 
-        scheduler.clear();
+            scheduler.clear();
 
-        if (!scheduler.isShutdown()) {
-            scheduler.shutdown();
+            if (!scheduler.isShutdown()) {
+                scheduler.shutdown();
+            }
+        } catch (SchedulerException e) {
+            log.error("Error scheduler.", e);
+            return;
         }
 
         log.info("---------- Stop server Beehive ----------");
     }
 
-    public void restart() throws SchedulerException {
+    public void restart() {
         stop();
 
         try {
@@ -91,7 +105,7 @@ public class Server {
         }
 
         try {
-            this.scheduler = StdSchedulerFactory.getDefaultScheduler();
+            scheduler = StdSchedulerFactory.getDefaultScheduler();
         } catch (SchedulerException sex) {
             log.error("Error initialization scheduler!", sex);
             System.exit(1);
@@ -116,6 +130,28 @@ public class Server {
         th.start();
     }
 
+    public void pauseScheduler() {
+        try {
+            if (scheduler.isStarted()) {
+                scheduler.pauseAll();
+            }
+        } catch (SchedulerException e) {
+            log.error("Error scheduler.", e);
+            return;
+        }
+    }
+
+    public void resumeScheduler() {
+        try {
+            if (scheduler.isStarted()) {
+                scheduler.resumeAll();
+            }
+        } catch (SchedulerException e) {
+            log.error("Error scheduler.", e);
+            return;
+        }
+    }
+
     public void loadCronFile(String fineName) {
         taskList.clear();
 
@@ -132,11 +168,11 @@ public class Server {
                         fineName, numLine, e.getMessage());
                 log.error(msg);
             }
+
+            addTaskToScheduler(taskList);
         } catch (IOException e) {
             log.error("Error load file \"" + fineName + "\"", e);
         }
-
-        addTaskToScheduler(taskList);
     }
 
     private void parseLine(String line) throws ParsingFileException {
@@ -207,14 +243,13 @@ public class Server {
                 .build();
     }
 
-    public synchronized boolean isExecute() {
+    private boolean isExecute() {
         return execute;
     }
 
-    private synchronized void setExecute(boolean execute) {
+    private void setExecute(boolean execute) {
         this.execute = execute;
     }
-
 }
 
 
