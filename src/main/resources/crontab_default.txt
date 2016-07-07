@@ -1,0 +1,16 @@
+# sec min hou dom mon dow command
+
+# каждые 10 секунд
+  0/10 *   *   *   *   ?   /opt/1cv8/8.3.8.1784/1cv8 ENTERPRISE /Svirt:1641\mag /Nserver /Pserver
+
+# каждые 5 минут
+#  0   0/5 *   *   *   ?   /opt/1cv8/8.3.8.1784/1cv8 ENTERPRISE /S virt:1641\mag /N server /P server
+
+# каждые 5 минут и 10 секунд (т.е. 10:00:10, 10:05:10, и т.д.)
+#  10  0/5 *   *   *   ?   /opt/1cv8/8.3.8.1784/1cv8 ENTERPRISE /S"virt:1641\mag" /N"server" /P"server"
+
+# 10:30, 11:30, 12:30 и 13:30, каждую среду и пятницу.
+#  0   30  10-13 ? *   WED,FRI   /opt/1cv8/8.3.8.1784/1cv8 ENTERPRISE /S"virt:1641\mag" /N"server" /P"server"
+
+# каждые полчаса с 8 утра до 10 утра 5 и 20 числа каждого месяца (8:00, 8:30, 9:00 и 9:30)
+#  0   0/30 8-9 5,20 * ?   /opt/1cv8/8.3.8.1784/1cv8 ENTERPRISE /S"virt:1641\mag" /N"server" /P"server"
