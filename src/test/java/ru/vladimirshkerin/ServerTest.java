@@ -2,7 +2,6 @@ package ru.vladimirshkerin;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -13,7 +12,7 @@ import org.junit.Test;
  */
 public class ServerTest {
 
-    private final String fileName = "crontab.txt";
+    private final String fileName = "crontab_default.txt";
     private final String path = "/opt/1cv8/8.3.8.1784/1cv8";
     private final String[] parameters = new String[]{
             "ENTERPRISE", "/S", "virt:1641\\mag", "/N", "server", "/P", "server"};
