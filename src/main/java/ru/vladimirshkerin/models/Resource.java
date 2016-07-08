@@ -41,11 +41,7 @@ public class Resource {
      * @return a resource string found for key
      */
     public static String getString(String key) {
-        if ("Application.version".equals(key)) {
-            return ResourceBundle.getBundle("buildNumber").getString(key);
-        } else {
-            return resourceStr.getString(key);
-        }
+        return resourceStr.getString(key);
     }
 
     /**
@@ -73,5 +69,14 @@ public class Resource {
      */
     public static Font getCurrentFont() {
         return currentFont;
+    }
+
+    /**
+     * Returns the current build number of the program.
+     *
+     * @return a variable of type string with the current build number.
+     */
+    public static String getBuildNumber() {
+        return ResourceBundle.getBundle("buildNumber").getString("Application.version");
     }
 }
