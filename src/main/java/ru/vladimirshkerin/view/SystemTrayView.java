@@ -82,6 +82,7 @@ public class SystemTrayView extends JFrame {
                     @Override
                     public void run() {
                         SettingsForm form = new SettingsForm();
+                        form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         form.setTitle("Beehive");
                         form.setVisible(true);
                     }

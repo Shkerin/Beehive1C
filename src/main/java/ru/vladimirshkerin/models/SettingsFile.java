@@ -25,15 +25,16 @@ public class SettingsFile implements Settings {
     private static Properties properties;
     private static File propertiesFile;
 
+    static {
+        Instance = new SettingsFile();
+    }
+
     /**
      * Returns an instance of the class single.
      *
      * @return an instance of the class.
      */
     public static SettingsFile getInstance() {
-        if (Instance == null) {
-            Instance = new SettingsFile();
-        }
         return Instance;
     }
 
@@ -43,9 +44,8 @@ public class SettingsFile implements Settings {
     private SettingsFile() {
         String userDir = System.getProperty("user.dir");
         propertiesFile = new File(userDir, FILE_NAME_SETTINGS);
-        if (!propertiesFile.exists()) {
-            properties = new Properties(getDefaultSettings());
-        } else {
+        properties = new Properties(getDefaultSettings());
+        if (propertiesFile.exists()) {
             try (FileInputStream in = new FileInputStream(propertiesFile)) {
                 properties.load(in);
             } catch (IOException e) {
@@ -59,13 +59,13 @@ public class SettingsFile implements Settings {
      *
      * @return a variable of type SettingsFile with the default settings
      */
-    private static Properties getDefaultSettings() {
-        Properties properties = new Properties();
+    private Properties getDefaultSettings() {
+        Properties props = new Properties();
 
-        properties.put("crontab.file", Resource.getCurrentPath() + "/crontab.txt");
-        properties.put("language", Resource.getCurrentLocale());
+        props.put("crontab.file", Resource.getCurrentPath() + System.getProperty("file.separator") + "crontab.txt");
+        props.put("language", Resource.getCurrentLocale());
 
-        return properties;
+        return props;
     }
 
     /**
@@ -87,12 +87,12 @@ public class SettingsFile implements Settings {
      * @throws NotFoundSettingException if the parameter is not found for the key
      */
     @Override
-    public String getString(String key) throws NotFoundSettingException {
-        String property = properties.getProperty(key);
-        if (property == null) {
+    public String getSetting(String key) throws NotFoundSettingException {
+        String str = properties.getProperty(key);
+        if (str == null) {
             throw new NotFoundSettingException("settings \"" + key + "\" not found");
         }
-        return property;
+        return str;
     }
 
     /**

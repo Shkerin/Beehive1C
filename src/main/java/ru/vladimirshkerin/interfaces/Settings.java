@@ -22,13 +22,13 @@ public interface Settings {
     void storeSettings() throws IOException;
 
     /**
-     * Returns the parameter string of the application.
+     * Gets the application setting.
      *
      * @param key key to search for
      * @return string with the found parameter
      * @throws NotFoundSettingException if the parameter is not found for the key
      */
-    String getString(String key) throws NotFoundSettingException;
+    String getSetting(String key) throws NotFoundSettingException;
 
     /**
      * Sets the application setting.
