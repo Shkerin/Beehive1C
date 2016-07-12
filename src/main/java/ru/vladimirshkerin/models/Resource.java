@@ -23,7 +23,7 @@ public class Resource {
 
         currentLocale = new Locale(language, country);
         currentPath = System.getProperty("user.dir");
-        currentFont = new Font("Arial", Font.PLAIN, 12);//UIManager.getFont("List.font")
+        currentFont = new Font("Arial", Font.PLAIN, 13);//UIManager.getFont("List.font")
         resourceStr = ResourceBundle.getBundle("strings", currentLocale);
     }
 
@@ -78,5 +78,14 @@ public class Resource {
      */
     public static String getBuildNumber() {
         return ResourceBundle.getBundle("buildNumber").getString("Application.version");
+    }
+
+    /**
+     * Returns the current package of the program.
+     *
+     * @return a variable of type string with the current package.
+     */
+    public static String getPackage() {
+        return "ru/vladimirshkerin/beehive";
     }
 }
