@@ -170,7 +170,10 @@ public class Server {
 
     private void createCrontabFile(Path path) {
         try (InputStream is = getClass().getResourceAsStream("/crontab_default.txt")) {
+
             Files.copy(is, path); //StandardCopyOption.REPLACE_EXISTING
+
+            log.info("Create crontab file \"crontab.txt\" in the folder \"" + path.toAbsolutePath() + "\"");
         } catch (IOException e) {
             log.error("Error create crontab file", e);
         }
@@ -194,6 +197,8 @@ public class Server {
             }
 
             addTaskToScheduler(taskList);
+
+            log.trace("Load crontab file \"crontab.txt\" in the folder \"" + fineName + "\"");
         } catch (IOException e) {
             log.error("Error load file \"" + fineName + "\"", e);
         }
@@ -276,20 +281,3 @@ public class Server {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
