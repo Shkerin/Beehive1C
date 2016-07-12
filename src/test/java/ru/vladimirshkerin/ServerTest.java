@@ -2,6 +2,7 @@ package ru.vladimirshkerin;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,7 @@ public class ServerTest {
         server.stop();
     }
 
+    @Ignore
     @Test(timeout = 11L * 1000L)
     public void start() throws Exception {
         server.start();
@@ -41,5 +43,19 @@ public class ServerTest {
         }
     }
 
-}
+    @Ignore
+    @Test
+    public void parseLine() throws Exception {
+        String str = " \"C:\\Program Files (x86)\\1cv82\\8.2.19.83\\bin\\1cv8mag.exe\" " +
+                " ENTERPRISE " +
+                " /S\"sp-sql9/perant_mag\" " +
+                " /Nserver " +
+                " /Pserver " +
+                " /C\"OBMEN#ЦентральныйОбмен#%2\" " +
+                " /RunModeOrdinaryApplication " +
+                " /DisableStartupMessages ";
 
+        String[] result = str.trim().split("\".*\"");
+        System.out.println(result);
+    }
+}
