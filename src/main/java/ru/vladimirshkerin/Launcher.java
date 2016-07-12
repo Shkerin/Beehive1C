@@ -1,19 +1,9 @@
 package ru.vladimirshkerin;
 
 import org.apache.log4j.Logger;
-import ru.vladimirshkerin.exceptions.NotFoundSettingException;
-import ru.vladimirshkerin.interfaces.Settings;
-import ru.vladimirshkerin.models.Resource;
-import ru.vladimirshkerin.models.SettingsFile;
 import ru.vladimirshkerin.view.SystemTrayView;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 /**
  * The class starting the server and creating the tray icon.
@@ -25,7 +15,6 @@ public class Launcher {
 
     private static Logger log = Logger.getLogger(Server.class);
 
-    private static Settings settings = SettingsFile.getInstance();
     private static Server server = Server.getInstance();
 
     public static void main(String[] args) {
@@ -34,7 +23,7 @@ public class Launcher {
         if (args.length > 0) {
             launcher.parseArgs(args);
         } else {
-            launcher.startServer();
+            server.start();
         }
     }
 
@@ -71,31 +60,6 @@ public class Launcher {
             System.out.println("Beehive restart.");
         } else {
             server.stop();
-        }
-    }
-
-    private void startServer() {
-        String str;
-        try {
-            str = settings.getString("crontab.file");
-        } catch (NotFoundSettingException e) {
-            str = Resource.getCurrentPath() + System.getProperty("line.separate") + "crontab.txt";
-        }
-        Path path = Paths.get(str);
-        if (!Files.exists(path)) {
-            createCrontabFile(path);
-        }
-
-        server.loadCronFile(str);
-        server.start();
-    }
-
-    private void createCrontabFile(Path path) {
-        try (InputStream is = getClass().getResourceAsStream("/crontab_default.txt")) {
-            Files.createFile(path);
-            Files.copy(is, path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            log.error("Error create crontab file", e);
         }
     }
 

@@ -4,16 +4,18 @@ import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import ru.vladimirshkerin.enums.CronFiled;
+import ru.vladimirshkerin.exceptions.NotFoundSettingException;
 import ru.vladimirshkerin.exceptions.ParsingFileException;
 import ru.vladimirshkerin.interfaces.Settings;
-import ru.vladimirshkerin.models.Command;
-import ru.vladimirshkerin.models.ProcessSystemIml;
-import ru.vladimirshkerin.models.SettingsFile;
-import ru.vladimirshkerin.models.Task;
+import ru.vladimirshkerin.models.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
@@ -60,6 +62,20 @@ public class Server {
 
     public void start() {
         log.info("---------- Start server Beehive ----------");
+
+        String str;
+        try {
+            str = settings.getSetting("crontab.file");
+        } catch (NotFoundSettingException e) {
+            str = Resource.getCurrentPath() + System.getProperty("file.separator") + "crontab.txt";
+        }
+
+        Path path = Paths.get(str);
+        if (!Files.exists(path)) {
+            createCrontabFile(path);
+        }
+
+        loadCronFile(str);
 
         try {
             if (!scheduler.isStarted()) {
@@ -152,6 +168,14 @@ public class Server {
         }
     }
 
+    private void createCrontabFile(Path path) {
+        try (InputStream is = getClass().getResourceAsStream("/crontab_default.txt")) {
+            Files.copy(is, path); //StandardCopyOption.REPLACE_EXISTING
+        } catch (IOException e) {
+            log.error("Error create crontab file", e);
+        }
+    }
+
     public void loadCronFile(String fineName) {
         taskList.clear();
 
@@ -180,7 +204,7 @@ public class Server {
 
         if (result.length == 0 || result[0].isEmpty() || result[0].equals("#")) {
             return;
-        } else if (result.length < 6) {
+        } else if (result.length < 7) {
             throw new ParsingFileException(line);
         }
 
@@ -250,6 +274,7 @@ public class Server {
     private void setExecute(boolean execute) {
         this.execute = execute;
     }
+
 }
 
 
