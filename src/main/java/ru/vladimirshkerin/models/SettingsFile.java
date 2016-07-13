@@ -1,6 +1,7 @@
 package ru.vladimirshkerin.models;
 
 import org.apache.log4j.Logger;
+import ru.vladimirshkerin.enums.SettingsEnum;
 import ru.vladimirshkerin.exceptions.NotFoundSettingException;
 import ru.vladimirshkerin.interfaces.Settings;
 
@@ -62,8 +63,13 @@ public class SettingsFile implements Settings {
     private Properties getDefaultSettings() {
         Properties props = new Properties();
 
-        props.put("crontab.file", Resource.getCurrentPath() + System.getProperty("file.separator") + "crontab.txt");
-        props.put("language", Resource.getCurrentLocale());
+        String crontabFile = Resource.getCurrentPath() +
+                System.getProperty("file.separator") +
+                Resource.getDefaultCrontabFileName();
+
+        props.put(SettingsEnum.SCHEDULER_CRONTAB_FILE.getValue(), crontabFile);
+        props.put(SettingsEnum.SCHEDULER_THREAD_COUNT.getValue(), 5);
+        props.put(SettingsEnum.LANGUAGE.getValue(), Resource.getCurrentLocale());
 
         return props;
     }

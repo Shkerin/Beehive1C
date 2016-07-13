@@ -36,7 +36,7 @@ public class SettingsReg implements Settings {
      */
     private SettingsReg() {
         Preferences root = Preferences.userRoot();
-        node = root.node(Resource.getPackage());
+        node = root.node(Resource.getCurrentPackage());
         if ("".equals(node.get("width.position.settings.window", ""))) {
             setDefaultSettings();
         }

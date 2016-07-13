@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import ru.vladimirshkerin.enums.CronFiled;
+import ru.vladimirshkerin.enums.SettingsEnum;
 import ru.vladimirshkerin.exceptions.NotFoundSettingException;
 import ru.vladimirshkerin.exceptions.ParsingFileException;
 import ru.vladimirshkerin.interfaces.Settings;
@@ -65,9 +66,11 @@ public class Server {
 
         String str;
         try {
-            str = settings.getSetting("crontab.file");
+            str = settings.getSetting(SettingsEnum.SCHEDULER_CRONTAB_FILE.getValue());
         } catch (NotFoundSettingException e) {
-            str = Resource.getCurrentPath() + System.getProperty("file.separator") + "crontab.txt";
+            str = Resource.getCurrentPath() +
+                    System.getProperty("file.separator") +
+                    Resource.getDefaultCrontabFileName();
         }
 
         Path path = Paths.get(str);

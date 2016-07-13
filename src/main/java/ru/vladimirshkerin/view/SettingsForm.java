@@ -2,6 +2,7 @@ package ru.vladimirshkerin.view;
 
 import org.apache.log4j.Logger;
 import ru.vladimirshkerin.Launcher;
+import ru.vladimirshkerin.enums.SettingsEnum;
 import ru.vladimirshkerin.exceptions.NotFoundSettingException;
 import ru.vladimirshkerin.interfaces.Settings;
 import ru.vladimirshkerin.models.Resource;
@@ -75,7 +76,7 @@ public class SettingsForm extends JFrame {
         cronLabel = new JLabel("Crontab file:", SwingConstants.RIGHT);
         cronField = new JTextField(20);
         try {
-            cronField.setText(settingsFile.getSetting("crontab.file"));
+            cronField.setText(settingsFile.getSetting(SettingsEnum.SCHEDULER_CRONTAB_FILE.getValue()));
         } catch (NotFoundSettingException e) {
             log.error("Error reading setting.", e);
         }
@@ -160,7 +161,7 @@ public class SettingsForm extends JFrame {
     private void saveSettings() {
         boolean isSave = false;
         if (!cronField.getText().isEmpty()) {
-            settingsFile.setSetting("crontab.file", cronField.getText());
+            settingsFile.setSetting(SettingsEnum.SCHEDULER_CRONTAB_FILE.getValue(), cronField.getText());
             isSave = true;
         }
 
