@@ -15,6 +15,8 @@ public class Resource {
     private static Locale currentLocale;
     private static String currentPath;
     private static Font currentFont;
+    private static String currentPackage;
+    private static String defaultCrontabFileName;
     private static ResourceBundle resourceStr;
 
     static {
@@ -24,6 +26,8 @@ public class Resource {
         currentLocale = new Locale(language, country);
         currentPath = System.getProperty("user.dir");
         currentFont = new Font("Arial", Font.PLAIN, 13);//UIManager.getFont("List.font")
+        currentPackage = "ru/vladimirshkerin/beehive";
+        defaultCrontabFileName = "crontab.txt";
         resourceStr = ResourceBundle.getBundle("strings", currentLocale);
     }
 
@@ -72,20 +76,29 @@ public class Resource {
     }
 
     /**
+     * Returns the current package of the program.
+     *
+     * @return a variable of type string with the current package.
+     */
+    public static String getCurrentPackage() {
+        return currentPackage;
+    }
+
+    /**
+     * Returns the current default crontab file name.
+     *
+     * @return a variable of type string with the current default crontab file name.
+     */
+    public static String getDefaultCrontabFileName() {
+        return defaultCrontabFileName;
+    }
+
+    /**
      * Returns the current build number of the program.
      *
      * @return a variable of type string with the current build number.
      */
     public static String getBuildNumber() {
         return ResourceBundle.getBundle("buildNumber").getString("Application.version");
-    }
-
-    /**
-     * Returns the current package of the program.
-     *
-     * @return a variable of type string with the current package.
-     */
-    public static String getPackage() {
-        return "ru/vladimirshkerin/beehive";
     }
 }
